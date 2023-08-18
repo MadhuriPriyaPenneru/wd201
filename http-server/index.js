@@ -1,10 +1,12 @@
 const http = require("http");
 const fs = require("fs");
+const minimist = require("minimist");
+
+const args = minimist(process.argv.slice(2)); // Parse command-line arguments
 
 let homeContent = "";
 let projectContent = "";
-let regContent = "";
-
+let projecContent = "";
 fs.readFile("home.html", (err, home) => {
   if (err) {
     throw err;
@@ -20,29 +22,36 @@ fs.readFile("project.html", (err, project) => {
 });
 
 fs.readFile("registration.html", (err, registration) => {
-    if (err) {
-      throw err;
-    }
-    regContent = registration;
-  });
+  if (err) {
+    throw err;
+  }
+  projecContent = registration;
+});
+const port = args.port || 5000; // Use the supplied port or default to 3006
 
-http
-  .createServer((request, response) => {
-    let url = request.url;
-    response.writeHeader(200, { "Content-Type": "text/html" });
-    switch (url) {
-      case "/project":
+const server = http.createServer((request, response) => {
+  let url = request.url;
+  response.setHeader("Content-Type", "text/html");
+
+  switch (url) {
+    
+    case "/project":
         response.write(projectContent);
-        response.end();
+      
         break;
         case "/registration":
         response.write(regContent);
-        response.end();
+       
         break;
       default:
         response.write(homeContent);
-        response.end();
+      
         break;
-    }
-  })
-  .listen(5000);
+  }
+
+  response.end();
+});
+
+server.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});
