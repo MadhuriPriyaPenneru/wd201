@@ -1,23 +1,48 @@
-const http = require('http');
-const yargs = require('yargs');
+const http = require("http");
+const fs = require("fs");
 
-// Parse c
-// Parse command line arguments using yargs
-const argv = yargs
-  .option('port', {
-    description: 'Port number for the server to listen on',
-    type: 'number',
-    demandOption: true, // Make the port option required
+let homeContent = "";
+let projectContent = "";
+let regContent = "";
+
+fs.readFile("home.html", (err, home) => {
+  if (err) {
+    throw err;
+  }
+  homeContent = home;
+});
+
+fs.readFile("project.html", (err, project) => {
+  if (err) {
+    throw err;
+  }
+  projectContent = project;
+});
+
+fs.readFile("registration.html", (err, registration) => {
+    if (err) {
+      throw err;
+    }
+    regContent = registration;
+  });
+
+http
+  .createServer((request, response) => {
+    let url = request.url;
+    response.writeHeader(200, { "Content-Type": "text/html" });
+    switch (url) {
+      case "/project":
+        response.write(projectContent);
+        response.end();
+        break;
+        case "/registration":
+        response.write(regContent);
+        response.end();
+        break;
+      default:
+        response.write(homeContent);
+        response.end();
+        break;
+    }
   })
-  .argv;
-
-// Create a simple HTTP server
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, World!\n');
-});
-
-// Start the server on the specified port
-server.listen(argv.port, () => {
-  console.log(`Server is listening on port ${argv.port}`);
-});
+  .listen(5000);
