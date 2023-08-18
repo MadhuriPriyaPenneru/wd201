@@ -46,4 +46,4 @@ localStorage.setItem("User-details",JSON.stringify(userDet));
 dispent();
 }
 user_det.addEventListener("submit",SaveDet);
-dis
+dispent();
