@@ -40,7 +40,7 @@ const server = http.createServer((request, response) => {
       
         break;
         case "/registration":
-        response.write(regContent);
+        response.write(projecContent);
        
         break;
       default:
